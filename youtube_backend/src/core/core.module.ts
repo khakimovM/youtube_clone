@@ -2,7 +2,6 @@ import { DynamicModule, Global, Module } from '@nestjs/common';
 import { DatabaseModule } from './database/database.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { ResendModule } from 'nestjs-resend';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import VideoServices from './video.service';
@@ -17,6 +16,7 @@ import { SeederModule } from './database/seeders/seeder.module';
       isGlobal: true,
       envFilePath: '.env',
     }),
+
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -28,13 +28,6 @@ import { SeederModule } from './database/seeders/seeder.module';
         },
       }),
     }),
-    ResendModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        apiKey: configService.get('RESEND_API_KEY') as string,
-      }),
-    }) as DynamicModule,
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), 'uploads'),
       serveRoot: '/uploads',

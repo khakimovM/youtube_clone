@@ -17,7 +17,7 @@ export default function Header() {
   const handleClick = () => {
     window.location.href = `${
       import.meta.env.VITE_API_BACKEND_URL
-    }/auth/google`;
+    }/auth/google/callback`;
   };
 
   useEffect(() => {

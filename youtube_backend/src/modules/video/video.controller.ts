@@ -10,22 +10,18 @@ import {
   Req,
   Res,
   SetMetadata,
-  UploadedFile,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { VideoService } from './video.service';
-import {
-  FileFieldsInterceptor,
-  FileInterceptor,
-} from '@nestjs/platform-express';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { Request, Response } from 'express';
 import { diskStorage } from 'multer';
 import path from 'path';
-import { Request, Response } from 'express';
+import { RoleGuard } from 'src/common/guards/role.guard';
 import { CreateVideoDto } from './dto/create-video.dto';
 import { UpdateVideoDto } from './dto/update-video.dto';
-import { RoleGuard } from 'src/common/guards/role.guard';
+import { VideoService } from './video.service';
 
 @Controller('video')
 export class VideoController {
@@ -110,7 +106,9 @@ export class VideoController {
   async getVideosFeed(
     @Query('limit') limit: number,
     @Query('page') page: number,
+    @Query('categoryId') categoryId?: string,
   ) {
-    return await this.videoService.getVideosFeed(page, limit);
+    return await this.videoService.getVideosFeed(page, limit, categoryId);
   }
 }
+

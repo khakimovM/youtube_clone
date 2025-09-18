@@ -37,13 +37,13 @@ export class SeederService implements OnModuleInit {
       });
       this.logger.log('Users seeders ended');
     } else {
-      Logger.log('Superadmin already existed');
+      this.logger.warn('Superadmin already existed');
     }
   }
   async onModuleInit() {
     try {
       await this.seedAll();
-      console.log('seeder ishladi');
+      this.logger.log('Seeder ishladi');
     } catch (error) {
       this.logger.error(error);
     }

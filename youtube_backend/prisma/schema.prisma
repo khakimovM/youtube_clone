@@ -8,38 +8,58 @@ datasource db {
 }
 
 model Users {
-  id                 String    @id @default(uuid())
-  email              String    @unique
-  username           String    @unique
-  password           String
+  id                 String         @id @default(uuid())
+  email              String         @unique
+  username           String         @unique
+  password           String?
   firstName          String?
   lastName           String?
   avatar             String?
-  role               Role      @default(USER)
-  is_email_verified  Boolean   @default(false)
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
+  role               Role           @default(USER)
+  is_email_verified  Boolean        @default(false)
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
   channelName        String?
   channelBanner      String?
   channelDescription String?
-  isBlocked          Boolean   @default(false)
+  isBlocked          Boolean        @default(false)
   blockedUntil       DateTime?
-  loginAttempts      Int       @default(0)
-  subscribersCount   Int       @default(0)
-  totalViews         Int       @default(0)
-
-  videos        Video[]
-  comments      Comment[]
-  likes         Like[]
-  subscriptions Subscription[] @relation("UserSubscriptions")
-  subscribers   Subscription[] @relation("UserSubscribers")
-  playlists     Playlist[]
-  WatchHistory  WatchHistory[]
+  loginAttempts      Int            @default(0)
+  subscribersCount   Int            @default(0)
+  totalViews         Int            @default(0)
+  OAuthAccount       OAuthAccount[]
+  videos             Video[]
+  comments           Comment[]
+  likes              Like[]
+  subscriptions      Subscription[] @relation("UserSubscriptions")
+  subscribers        Subscription[] @relation("UserSubscribers")
+  playlists          Playlist[]
+  WatchHistory       WatchHistory[]
 
   @@map("users")
 }
 
-// - notifications Notification[]
+model OAuthAccount {
+  id           String        @id @default(uuid())
+  userId       String
+  provider     OAuthProvider
+  providerId   String
+  accessToken  String?
+  refreshToken String?
+  expiresAt    DateTime?
+  tokenType    String?
+  scope        String?
+  idToken      String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users Users @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerId])
+  @@unique([userId, provider])
+  @@map("oauthaccount")
+}
 
 model Video {
   id            String      @id @default(uuid())
@@ -47,34 +67,33 @@ model Video {
   description   String?
   thumbnail     String?
   videoUrl      String
-  duration      Int // seconds
+  duration      Int
   status        VideoStatus @default(PROCESSING)
   visibility    Visibility  @default(PUBLIC)
   viewsCount    Int         @default(0)
   likesCount    Int         @default(0)
   dislikesCount Int         @default(0)
+  categoryId    String?
   createdAt     DateTime    @default(now())
 
-  // Relations
   authorId      String
   author        Users           @relation(fields: [authorId], references: [id], onDelete: Cascade)
   comments      Comment[]
   likes         Like[]
   PlaylistVideo PlaylistVideo[]
   WatchHistory  WatchHistory[]
+  category      Category?       @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@map("videos")
 }
 
-// KEYINROQ QO'SHISH MUMKIN:
-// - fileSize BigInt
-// - resolution String // 1080p, 720p, etc.
-// - category String?
-// - tags String[]
-// - commentsCount Int @default(0)
-// - publishedAt DateTime?
-// - watchHistory WatchHistory[]
-// - playlistVideos PlaylistVideo[]
+model Category {
+  id     String  @id @default(uuid())
+  title  String
+  videos Video[]
+
+  @@map("category")
+}
 
 model Comment {
   id         String   @id @default(uuid())
@@ -83,7 +102,6 @@ model Comment {
   createdAt  DateTime @default(now())
   isPinned   Boolean  @default(false)
 
-  // Relations
   authorId String
   author   Users  @relation(fields: [authorId], references: [id], onDelete: Cascade)
   videoId  String
@@ -92,13 +110,6 @@ model Comment {
 
   @@map("comments")
 }
-
-// KEYINROQ QO'SHISH MUMKIN (REPLY SYSTEM):
-// - dislikesCount Int @default(0)
-// - updatedAt DateTime @updatedAt
-// - parentId String?
-// - parent Comment? @relation("CommentReplies", fields: [parentId], references: [id])
-// - replies Comment[] @relation("CommentReplies")
 
 model Subscription {
   id                   String   @id @default(cuid())
@@ -120,7 +131,6 @@ model Playlist {
   visibility  Visibility @default(PUBLIC)
   createdAt   DateTime   @default(now())
 
-  // Relations
   authorId String
   author   Users           @relation(fields: [authorId], references: [id], onDelete: Cascade)
   videos   PlaylistVideo[]
@@ -167,7 +177,7 @@ enum LikeType {
 model WatchHistory {
   id        String   @id @default(cuid())
   watchedAt DateTime @default(now())
-  watchTime Int // seconds watched
+  watchTime Int
   userId    String
   user      Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
   videoId   String
@@ -175,27 +185,6 @@ model WatchHistory {
 
   @@unique([userId, videoId])
 }
-
-// KEYINROQ QO'SHISH MUMKIN BO'LGAN MODELLAR:
-/**
- * model Notification {
- * id        String           @id @default(cuid())
- * type      NotificationType
- * title     String
- * message   String
- * isRead    Boolean          @default(false)
- * createdAt DateTime         @default(now())
- * userId    String
- * user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
- * }
- * enum NotificationType {
- * NEW_VIDEO
- * NEW_SUBSCRIBER
- * VIDEO_LIKED
- * COMMENT_REPLY
- * MENTION
- * }
- */
 
 enum Role {
   SUPERADMIN
@@ -210,6 +199,13 @@ enum VideoStatus {
   PRIVATE
   UNLISTED
   DELETED
+}
+
+enum OAuthProvider {
+  Google
+  FACEBOOK
+  GITHUB
+  APPLE
 }
 
 enum Visibility {

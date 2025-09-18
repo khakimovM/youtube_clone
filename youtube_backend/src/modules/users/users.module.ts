@@ -18,6 +18,7 @@ import { v4 as uuid } from 'uuid';
           const fileName = `${uuid()}${extName}`;
           callback(null, fileName);
         },
+
         destination: './uploads/avatars',
       }),
       fileFilter: (req, file, callback) => {

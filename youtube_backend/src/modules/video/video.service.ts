@@ -21,6 +21,7 @@ export class VideoService {
   ) {}
   async uploadVideo(
     file: Express.Multer.File,
+
     videoData: CreateVideoDto,
     id: string,
     thumbnail: Express.Multer.File,
@@ -72,6 +73,7 @@ export class VideoService {
       const result = await this.db.prisma.video.create({
         data: {
           ...videoData,
+          categoryId: videoData.categoryId || null,
           videoUrl: fileNameData,
           authorId: id,
           status: 'PUBLISHED',
@@ -92,11 +94,11 @@ export class VideoService {
 
   async watchVideo(id: string, quality: string, range: string, res: Response) {
     const findVideo = await this.db.prisma.video.findFirst({ where: { id } });
-    console.log(findVideo);
+    // console.log(findVideo);
     if (!findVideo) {
       throw new NotFoundException('Video not found');
     }
-    const fileName = findVideo.videoUrl.split(`\\`).at(-1);
+    const fileName = findVideo.videoUrl.split(`/`).at(-1);
     const baseQuality = `${quality}.mp4`;
     const basePath = path.join(process.cwd(), 'uploads', 'videos');
     const readDir = fs.readdirSync(basePath);
@@ -105,8 +107,10 @@ export class VideoService {
       fileName as string,
       baseQuality,
     );
+    // console.log(readDir, fileName);
+
     if (!readDir.includes(fileName as string))
-      throw new NotFoundException('video not found 1');
+      throw new NotFoundException('video not found');
     const innerVideoDir = fs.readdirSync(
       path.join(basePath, fileName as string),
     );
@@ -176,7 +180,10 @@ export class VideoService {
         author: {
           select: {
             id: true,
+            likes: true,
+            totalViews: true,
             username: true,
+            
             channelName: true,
             avatar: true,
             is_email_verified: true,
@@ -224,12 +231,23 @@ export class VideoService {
     return { message: 'Video successful deleted' };
   }
 
-  async getVideosFeed(page: number, limit: number) {
+  async getVideosFeed(page: number, limit: number, categoryId?: string) {
     const offset = (page - 1) * limit;
+
+    let where: any = {
+      status: 'PUBLISHED',
+    };
+
+    const findCategory = await this.db.prisma.category.findFirst({
+      where: { id: categoryId },
+    });
+
+    if (findCategory) {
+      where.categoryId = categoryId;
+    }
+
     const videos = await this.db.prisma.video.findMany({
-      where: {
-        status: 'PUBLISHED',
-      },
+      where,
       include: {
         author: {
           select: {
@@ -247,12 +265,10 @@ export class VideoService {
       skip: offset,
       take: limit,
     });
-    const totalVideos = await this.db.prisma.video.count({
-      where: {
-        status: 'PUBLISHED',
-      },
-    });
+
+    const totalVideos = await this.db.prisma.video.count({ where });
     const totalPages = Math.ceil(totalVideos / limit);
+    // console.log(videos);
 
     return {
       videos,

@@ -1,6 +1,6 @@
 import { Button, Layout, Menu } from "antd";
 import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { authStore } from "../store/authStore";
 import { changeShowcaseStore } from "../store/showStore";
 import Icon from "./ui/Icons";
@@ -13,34 +13,18 @@ const MenuItems = [
     key: "1",
     icon: <Icon.sidebarHome />,
     style: { padding: "10px 16px", margin: "4px 0", gap: "6px" },
-    label: "Home",
+    label: <Link to="/">Home</Link>, // 🔑 Link ishlatildi
   },
   {
     key: "2",
     icon: <Icon.sidebarShorts />,
-    style: { padding: "10px 16px", margin: "4px 0", gap: "6px" },
-    label: "Shorts",
+    label: <Link to="/shorts">Shorts</Link>,
   },
   {
     key: "3",
     icon: <Icon.sidebarSubscriptions />,
-    style: { padding: "10px 16px", margin: "4px 0", gap: "6px" },
-    label: "Subscriptions",
+    label: <Link to="/subscriptions">Subscriptions</Link>,
   },
-  { type: "divider" as const },
-  {
-    key: "4",
-    icon: <Icon.sidebarLibrary />,
-    style: { padding: "10px 16px", margin: "4px 0", gap: "6px" },
-    label: "Library",
-  },
-  {
-    key: "5",
-    icon: <Icon.sidebarHistory />,
-    style: { padding: "10px 16px", margin: "4px 0", gap: "6px" },
-    label: "History",
-  },
-  { type: "divider" as const },
 ];
 
 // Explore bo‘limi

@@ -18,6 +18,7 @@ export class CommentsService {
     const findUser = await this.db.prisma.users.findFirst({
       where: { id: userId },
     });
+
     if (!findUser) throw new NotFoundException('User not found');
     const comment = await this.db.prisma.comment.create({
       data: { content, authorId: userId, videoId },
