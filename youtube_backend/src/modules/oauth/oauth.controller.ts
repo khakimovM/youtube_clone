@@ -17,7 +17,6 @@ export class OAuthController {
   async oauthGoogleCallback(@Req() req: Request, @Res() res: Response) {
     console.log(req['user']);
     const user = req['user'];
-    console.log('nasimxonovS');
     const token = await this.authService.oauthGoogleCallback(user);
     res.cookie('token', token, {
       maxAge: 1.1 * 3600 * 1000,

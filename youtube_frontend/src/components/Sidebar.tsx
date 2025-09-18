@@ -7,7 +7,6 @@ import Icon from "./ui/Icons";
 
 const { Sider } = Layout;
 
-// Full menu (open sidebar)
 const MenuItems = [
   {
     key: "1",
@@ -27,7 +26,6 @@ const MenuItems = [
   },
 ];
 
-// Explore bo‘limi
 const ExploreItems = [
   {
     key: "6",
@@ -90,7 +88,6 @@ export default function Sidebar() {
       collapsed={isOpen}
       width={240}
     >
-      {/* Main Menu */}
       <Menu
         theme="light"
         mode="inline"
@@ -98,10 +95,8 @@ export default function Sidebar() {
         items={isOpen ? MenuItems : MenuItems}
       />
 
-      {/* Agar sidebar ochiq bo‘lsa, Sign in + Explore chiqsin */}
       {!isOpen && (
         <>
-          {/* Sign in section */}
           {!open ? (
             <div
               className={
@@ -119,7 +114,6 @@ export default function Sidebar() {
             <></>
           )}
 
-          {/* Explore Menu */}
           <Menu
             theme="light"
             mode="inline"

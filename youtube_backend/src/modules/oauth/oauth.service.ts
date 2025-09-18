@@ -64,7 +64,6 @@ export class OAuthService {
       },
     });
     if (!findUSer) throw new NotFoundException('User not found');
-    console.log('nasimxonovS');
     return findUSer;
   }
 }

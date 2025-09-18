@@ -183,7 +183,7 @@ export class VideoService {
             likes: true,
             totalViews: true,
             username: true,
-            
+
             channelName: true,
             avatar: true,
             is_email_verified: true,
