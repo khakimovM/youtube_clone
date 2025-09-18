@@ -1,7 +1,7 @@
 import { Button, Layout, Menu } from "antd";
 import { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { authStore } from "../store/authStore";
+import { useUserStore } from "../store/authStore";
 import { changeShowcaseStore } from "../store/showStore";
 import Icon from "./ui/Icons";
 
@@ -69,10 +69,12 @@ const ExploreItems = [
 
 export default function Sidebar() {
   const { isOpen, toggle } = changeShowcaseStore();
-  const { isOpen: open } = authStore();
+  const { getUser } = useUserStore();
 
   const location = useLocation();
   const video = location.pathname.split("/")[1];
+
+  const open = getUser();
 
   useEffect(() => {
     toggle(false);
@@ -100,18 +102,22 @@ export default function Sidebar() {
       {!isOpen && (
         <>
           {/* Sign in section */}
-          <div
-            className={
-              open ? `px-4 py-3 border-y text-sm text-gray-700` : "hidden"
-            }
-          >
-            <p className="mb-2 text-[14px]">
-              Sign in to like videos, comment, and subscribe.
-            </p>
-            <Button type="default" icon={<Icon.defaultUserLogin />}>
-              Sign in
-            </Button>
-          </div>
+          {!open ? (
+            <div
+              className={
+                open ? `px-4 py-3 border-y text-sm text-gray-700` : "hidden"
+              }
+            >
+              <p className="mb-2 text-[14px]">
+                Sign in to like videos, comment, and subscribe.
+              </p>
+              <Button type="default" icon={<Icon.defaultUserLogin />}>
+                Sign in
+              </Button>
+            </div>
+          ) : (
+            <></>
+          )}
 
           {/* Explore Menu */}
           <Menu
