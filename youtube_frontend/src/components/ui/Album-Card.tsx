@@ -22,6 +22,7 @@ const Album = () => {
           data?.data.videos.map((video: any) => (
             <AlbumCards
               key={video.id}
+              id={video.id}
               createdAt={video.createdAt}
               thumbnail={video.thumbnail}
               viewsCount={video.viewsCount}

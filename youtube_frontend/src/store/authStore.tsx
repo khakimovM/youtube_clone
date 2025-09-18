@@ -1,15 +1,15 @@
-import { create } from 'zustand'
+import { create } from "zustand";
 
 type ToggleState = {
-     isOpen: boolean
-     authToggle: () => void
-}
+  isOpen: boolean;
+  authToggle: () => void;
+};
 
 export const authStore = create<ToggleState>((set) => ({
-     isOpen: true,
-     authToggle: () => {
-          set((state) => ({
-               isOpen: !state.isOpen
-          }))
-     }
-}))
+  isOpen: false,
+  authToggle: () => {
+    set((state) => ({
+      isOpen: !state.isOpen,
+    }));
+  },
+}));

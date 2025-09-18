@@ -85,7 +85,7 @@ const ExploreItems = [
 
 export default function Sidebar() {
   const { isOpen, toggle } = changeShowcaseStore();
-  const open = authStore((state) => state.isOpen);
+  const { isOpen: open } = authStore();
 
   const location = useLocation();
   const video = location.pathname.split("/")[1];
