@@ -40,7 +40,6 @@ const VideoCards = ({
   createdAt,
 }: VideoProps) => {
   const isOpen = changeShowcaseStore((state) => state.isOpen);
-  console.log(thumbnail);
 
   return (
     <div

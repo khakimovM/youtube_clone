@@ -1,54 +1,80 @@
 import { useState } from "react";
 import { TbDotsVertical } from "react-icons/tb";
+import moment from "moment";
 
 interface Props {
-     img: string;
-     title: string;
-     duration: string;
-     channelName: string;
-     views: string;
-     date: string
+  createdAt: Date | string;
+  thumbnail: string;
+  viewsCount: number;
+  title: string;
+  duration: number;
+  channelBanner: string;
+  channelName: string;
 }
 
-
-const AlbumCards = ({ img, channelName, date, duration, title, views }: Props) => {
+const AlbumCards = ({
+  createdAt,
+  thumbnail,
+  viewsCount,
+  title,
+  duration,
+  channelName,
+}: Props) => {
   const [hover, setHover] = useState(false);
+
+  // duration ni mm:ss formatga o‘tkazib beramiz
+  const formatDuration = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+  };
 
   return (
     <div
-      className="video-cards flex gap-2 justify-start items-start gap-x-1 relative hover:bg-[#d8d1d182] rounded-md"
+      className="flex gap-3 p-2 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer relative"
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
-      {/* Rasm qismi */}
-      <div className="card-top relative w-[40%] h-[100px]">
+      {/* Thumbnail qismi */}
+      <div className="relative w-[170px] min-w-[170px] h-[95px]">
         <img
-          className="min-w-[150px] max-w-[150px] h-[90%] object-center rounded-lg"
-          src={img}
+          className="w-full h-full object-cover rounded-lg"
+          src={thumbnail}
           alt="Video thumbnail"
         />
-        <span className="absolute bottom-2 right-3 bg-black text-white rounded-sm px-1 text-[13px]">
-          {duration}
+        <span className="absolute bottom-1 right-1 bg-black/80 text-white text-xs px-1 rounded">
+          {formatDuration(duration)}
         </span>
       </div>
 
-      <div className="card-bottom flex items-start gap-1">
-        <div className="bottom-right flex flex-col gap-1 overflow-hidden leading-tight">
-          <span className="text-[14px] text-[#0F0F0F] font-medium line-clamp-2 max-w-[100%] ">
-            {title.length < 28 ? title : title.slice(0,27) }
-          </span>
-          <span className="text-[12px] text-[black] font-bold">{channelName}</span>
-          <div className="flex flex-col gap-1 text-[12px] text-[#606060]">
-            <span>{views} views</span>
-            <span>• {date}</span>
-          </div>
+      {/* O'ng tarafdagi ma’lumotlar */}
+      <div className="flex flex-col flex-1">
+        {/* Title */}
+        <h3 className="text-[15px] font-medium text-[#0F0F0F] line-clamp-2">
+          {title}
+        </h3>
+
+        {/* Kanal nomi */}
+        <span className="text-[13px] text-gray-800 font-semibold mt-1">
+          {channelName}
+        </span>
+
+        {/* Views va vaqt */}
+        <div className="text-[12px] text-gray-600 flex items-center gap-1 mt-1">
+          <span>{viewsCount.toLocaleString()} views</span>
+          <span>•</span>
+          <span>{moment(createdAt).fromNow()}</span>
         </div>
       </div>
 
-      <TbDotsVertical className={`${hover ? "block size-4 absolute right-4 top-5" : "hidden"}`} />
+      {/* Options tugmasi */}
+      <TbDotsVertical
+        className={`${
+          hover ? "block" : "hidden"
+        } absolute right-3 top-3 text-gray-600 cursor-pointer`}
+      />
     </div>
   );
 };
 
-
-export default AlbumCards
+export default AlbumCards;

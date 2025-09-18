@@ -1,17 +1,17 @@
-import CategorySection from "../components/Category-Section"
-import Showcase from '../components/Showcase'
+import CategorySection from "../components/Category-Section";
+import Showcase from "../components/Showcase";
 const HomePage = () => {
-     return (
-          <>
-               <main className="category-section w-full h-[40px]">
-                    <CategorySection />
-               </main>
+  return (
+    <main>
+      <div className="category-section w-full h-[40px]">
+        <CategorySection />
+      </div>
 
-               <main className="showcase pr-2">
-                    <Showcase />
-               </main>
-          </>
-     )
-}
+      <div className="showcase pr-2">
+        <Showcase />
+      </div>
+    </main>
+  );
+};
 
-export default HomePage
+export default HomePage;

@@ -7,15 +7,14 @@ const VideoPage = () => {
     `${import.meta.env.VITE_API_BACKEND_URL}/video/${id}/stream?quality=720p`
   );
   return (
-    <div className="video-page  w-full flex gap-3 px-5">
-      <div className="left w-[70%] shadow">
+    <div className="video-page p-3 h-full w-full max-h-[800px] flex gap-3 px-5">
+      <div className="w-[70%] h-[600px] flex items-end rounded-[15px] overflow-hidden">
         <video
           width="640"
           height="360"
           controls
           style={{
-            minHeight: "580px",
-            maxHeight: "580px",
+            height: "580px",
             width: "100%",
             borderRadius: "15px",
           }}
@@ -28,8 +27,8 @@ const VideoPage = () => {
           />
         </video>
       </div>
-      <div className="right w-[30%] overflow-y-auto min-h-[580px] max-h-[580px]">
-        <div className="w-full text-[20px] font-poppins font-bold sticky">
+      <div className="right w-[30%] border-[1px]  border-slate-300 rounded-[20px] overflow-hidden min-h-[180px] max-h-[600px]">
+        <div className="w-full  p-2 text-[20px] font-poppins font-bold sticky">
           <span className="flex items-center gap-x-2">
             <PiMusicNoteFill />
             Albums

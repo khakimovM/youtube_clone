@@ -3,16 +3,23 @@ import { useGetVideos } from "../hooks/requests/useGetVideos";
 import { changeShowcaseStore } from "../store/showStore";
 import VideoCards from "./ui/VideoCards";
 import { Skeleton } from "antd";
+import { useCategoryStore } from "../store/useCategoryStore";
 
 const Showcase = () => {
-  const isOpen = changeShowcaseStore((state) => state.isOpen);
+  const { isOpen } = changeShowcaseStore();
   const { data, isSuccess, isPending } = useGetVideos();
+  const { activeCategoryId } = useCategoryStore();
 
   useEffect(() => {
-    if (isSuccess) {
-      console.log(data?.data.videos);
-    }
-  }, [isSuccess, data]);
+    // console.log(categoryData?.data.data);
+    console.log("yaxshi");
+
+    // console.log(activeCategoryId);
+
+    // if (isSuccess) {
+    //   console.log(data?.data.videos);
+    // }
+  }, [isSuccess, data, activeCategoryId]);
 
   return (
     <div
@@ -20,7 +27,7 @@ const Showcase = () => {
     >
       {/* ⏳ Agar hali data kelmagan bo‘lsa Skeleton chiqaramiz */}
       {isPending &&
-        Array.from({ length: 8 }).map((_, i) => (
+        Array.from({ length: isOpen ? 8 : 6 }).map((_, i) => (
           <div key={i} className="flex flex-col gap-2">
             {/* Thumbnail skeleton */}
             <Skeleton.Image
@@ -31,7 +38,7 @@ const Showcase = () => {
             <Skeleton
               active
               title={{ width: "90%" }}
-              paragraph={{ rows: 2, width: ["80%", "60%"] }}
+              paragraph={{ rows: 1, width: ["80%", "60%"] }}
             />
           </div>
         ))}

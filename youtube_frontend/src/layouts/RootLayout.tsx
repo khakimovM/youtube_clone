@@ -7,12 +7,16 @@ function RootLayout() {
   return (
     <>
       <Header />
-      <div className="mt-5 ">
-        <Sidebar>
-          <main className="flex-1 flex flex-col ml-3">
-            <Outlet />
-          </main>
-        </Sidebar>
+      <div className="flex">
+        {/* Sidebar */}
+        <div className="sticky top-[56px] mycon">
+          <Sidebar />
+        </div>
+
+        {/* Main */}
+        <main className="flex-1 flex flex-col ml-3">
+          <Outlet />
+        </main>
       </div>
     </>
   );

@@ -5,7 +5,7 @@ export const useGetCategories = () => {
   const { isSuccess, data, isPending } = useQuery({
     queryKey: ["get-categories"],
     queryFn: async () => {
-      return await api.get("category/all");
+      return await api.get("categories/all");
     },
     refetchOnWindowFocus: false,
     staleTime: 0,
